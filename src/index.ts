@@ -1,5 +1,6 @@
 import express, {Request, Response} from 'express';
 import cors from 'cors';
+import { apiRouter } from './routes/api';
 
 const app = express();
 
@@ -9,9 +10,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.get('/api',(req: Request, res: Response)=>{
-    res.send('hello world');
-})
+app.use('/api',apiRouter)
 
 app.listen(5000, ()=>{
     console.log("listening on PORT 5000");
