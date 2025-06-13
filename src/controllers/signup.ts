@@ -11,7 +11,12 @@ const Signup = async(req: Request, res: Response) => {
         password : req.body.password,
         uid : req.body.uid
     }
-    await CreateUser(user);
+    const registered : boolean = await CreateUser(user);
+    if(registered){
+        res.status(200).json({message: `created user: ${user.f_name} successfully`});
+    }else{
+        res.status(401).json({message : `User already exists`})
+    }
 }
 
 export {Signup}

@@ -11,6 +11,12 @@ const Signup = async (req, res) => {
         password: req.body.password,
         uid: req.body.uid
     };
-    await (0, createUser_1.CreateUser)(user);
+    const registered = await (0, createUser_1.CreateUser)(user);
+    if (registered) {
+        res.status(200).json({ message: `created user: ${user.f_name} successfully` });
+    }
+    else {
+        res.status(401).json({ message: `User already exists` });
+    }
 };
 exports.Signup = Signup;

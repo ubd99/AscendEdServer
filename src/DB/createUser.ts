@@ -1,8 +1,28 @@
 import { User } from "../interfaces/user";
-import { pool } from "./postgres";
+import { userModel } from "../Models/user";
+import { pool, sequelise } from "./postgres";
 import bcrypt from "bcrypt";
 
-const CreateUser = async (user: User) => {
+const CreateUser = async (userP: User) => {
+  try {
+    const hashedPass = await bcrypt.hash(userP.password, 10);
+    await userModel.sync();
+    const user = await userModel.create({
+      email: userP.email,
+      f_name: userP.f_name,
+      l_name: userP.l_name,
+      password: hashedPass,
+      isadmin: false,
+    });
+    console.log('user: ' + userP.f_name + 'created');
+    return true
+  } catch (e) {
+    console.log('error in CreateUser: ' + e);
+    return false;
+  }
+};
+
+const CreateUserPg = async (user: User) => {
   try {
     await pool.query(`CREATE TABLE IF NOT EXISTS users(
                       uid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -18,17 +38,13 @@ const CreateUser = async (user: User) => {
                     VALUES ($1,$2,$3,$4)`,
       [user.email, user.f_name, user.l_name, hashedPass]
     );
-    const name = await pool.query(`SELECT f_name FROM users WHERE l_name=$1`, [
-      "khan",
-    ]);
-    console.log(`The returned name is ${name.rows}`);
   } catch (e: any) {
-    if(e.code === "23505"){
-        console.log("Error in CreateUser: " + e);
-        return "E-Mail already registered."
+    if (e.code === "23505") {
+      console.log("Error in CreateUser: " + e);
+      return "E-Mail already registered.";
     }
     console.log("Error in CreateUser: " + e);
   }
 };
 
-export { CreateUser };
+export { CreateUserPg, CreateUser };

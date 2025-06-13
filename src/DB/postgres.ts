@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { Sequelize } from "sequelize";
 
 const pool = new Pool({
     user : 'postgres',
@@ -8,4 +9,9 @@ const pool = new Pool({
     database : 'ascendeddb'
 })
 
-export {pool}
+const sequelise: Sequelize = new Sequelize('ascendeddb', 'postgres', 'asddf123', {
+    host: 'localhost',
+    dialect: 'postgres'
+})
+
+export {pool, sequelise}

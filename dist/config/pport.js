@@ -20,6 +20,7 @@ passport_1.default.use(new passport_local_1.Strategy({
         if (!psw) {
             return done(null, false, { message: "Error: invalid password" });
         }
+        console.log('in passport, signin success, with returned user: ' + user.f_name);
         return done(null, user);
     }
     catch (e) {
