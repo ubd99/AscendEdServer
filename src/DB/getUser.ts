@@ -1,6 +1,6 @@
 import { User } from "../interfaces/user";
 import { userModel } from "../Models/user";
-import { pool } from "./postgres";
+import { pool, sequelise } from "./postgres";
 
 const getUser = async (email: string) => {
   try {
@@ -18,13 +18,39 @@ const getUser = async (email: string) => {
         email: userM.dataValues.email,
         password: userM.dataValues.password,
       };
-      console.log('in getUser, found user: ' + user.f_name);
+      console.log("in getUser, found user: " + user.f_name);
       return user;
     } else {
       return null;
     }
   } catch (e) {
     console.log("Error in getUser: " + e);
+    return null;
+  }
+};
+
+const getUserByUid = async (uid: string) => {
+  try {
+    await userModel.sync();
+    const data = await userModel.findOne({
+      where : {
+        uid : uid,
+      }
+    });
+    if(data){
+      const user: User = {
+        uid : data.dataValues.uid,
+        f_name : data.dataValues.f_name,
+        l_name : data.dataValues.l_name,
+        email : data.dataValues.email,
+        password : data.dataValues.password
+      }
+
+      return user;
+    }
+    return null;
+  } catch (e) {
+    console.log('error in getUserByUid: ' + e);
     return null;
   }
 };
@@ -48,4 +74,4 @@ const getUserPg = async (email: string) => {
   }
 };
 
-export { getUser, getUserPg };
+export { getUser, getUserPg, getUserByUid };

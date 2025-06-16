@@ -1,6 +1,6 @@
 import { User } from "../interfaces/user";
 import { userModel } from "../Models/user";
-import { pool, sequelise } from "./postgres";
+import { pool} from "./postgres";
 import bcrypt from "bcrypt";
 
 const CreateUser = async (userP: User) => {

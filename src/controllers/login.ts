@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import passport from "passport";
+import jwt from 'jsonwebtoken';
 import { User } from "../interfaces/user";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   console.log(req.body)
@@ -21,10 +25,12 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         }
         if (user) {
           console.log("login Success");
-          res.status(200).json({ message: "login success", user });
+          const token = jwt.sign({uid:user.uid}, process.env.JWT_SECRET as string, {expiresIn : '1h'})
+          res.send(token)
+          console.log(`token ${token} sent`);
         }
       } catch (e) {
-        console.log(e);
+        console.log(`error logging in ${e}`);
       }
     }
   )(req , res, next);

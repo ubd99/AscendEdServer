@@ -3,7 +3,10 @@ import cors from "cors";
 import { apiRouter } from "./routes/api";
 import "./config/pport";
 import passport from "passport";
+import dotenv from 'dotenv';
 import { sequelise } from "./DB/postgres";
+
+dotenv.config();
 
 const app = express();
 

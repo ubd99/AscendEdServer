@@ -1,7 +1,15 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import {
+  ExtractJwt,
+  Strategy as JWTStrategy,
+  StrategyOptionsWithoutRequest,
+} from "passport-jwt";
 import bcrypt from "bcrypt";
-import { getUser } from "../DB/getUser";
+import { getUser, getUserByUid } from "../DB/getUser";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 passport.use(
   new LocalStrategy(
@@ -9,7 +17,7 @@ passport.use(
       usernameField: "email",
     },
     async (email, password, done) => {
-      console.log('passport is running')
+      console.log("passport is running");
       try {
         const user = await getUser(email);
 
@@ -22,7 +30,9 @@ passport.use(
         if (!psw) {
           return done(null, false, { message: "Error: invalid password" });
         }
-        console.log('in passport, signin success, with returned user: ' + user.f_name);
+        console.log(
+          "in passport, signin success, with returned user: " + user.f_name
+        );
         return done(null, user);
       } catch (e) {
         console.log(e);
@@ -30,4 +40,23 @@ passport.use(
       }
     }
   )
+);
+
+const jwtOptions: StrategyOptionsWithoutRequest = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET as string,
+};
+
+passport.use(
+  new JWTStrategy(jwtOptions, async (payload, done) => {
+    try {
+      const user = await getUserByUid(payload.uid);
+      if(user){
+        return done(null, user);
+      }
+      return done(null, null);
+    } catch (e) {
+      return(e as Error, null);
+    }
+  })
 );
