@@ -1,12 +1,11 @@
 import { User } from "../interfaces/user";
-import { userModel } from "../Models/user";
+import { userModel } from "../Models/modelIndex";
 import { pool} from "./postgres";
 import bcrypt from "bcrypt";
 
 const CreateUser = async (userP: User) => {
   try {
     const hashedPass = await bcrypt.hash(userP.password, 10);
-    await userModel.sync();
     const user = await userModel.create({
       email: userP.email,
       f_name: userP.f_name,

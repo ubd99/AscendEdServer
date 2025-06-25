@@ -9,7 +9,7 @@ const Signup = async(req: Request, res: Response) => {
         l_name : req.body.l_name,
         email : req.body.email,
         password : req.body.password,
-        uid : req.body.uid
+        isadmin : false
     }
     const registered : boolean = await CreateUser(user);
     if(registered){

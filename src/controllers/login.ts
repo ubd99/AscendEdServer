@@ -26,11 +26,12 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         if (user) {
           console.log("login Success");
           const token = jwt.sign({uid:user.uid}, process.env.JWT_SECRET as string, {expiresIn : '1h'})
-          res.send(token)
+          res.json({user: user, token: token});
           console.log(`token ${token} sent`);
         }
       } catch (e) {
         console.log(`error logging in ${e}`);
+        res.send(e);
       }
     }
   )(req , res, next);

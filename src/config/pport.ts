@@ -49,6 +49,7 @@ const jwtOptions: StrategyOptionsWithoutRequest = {
 
 passport.use(
   new JWTStrategy(jwtOptions, async (payload, done) => {
+    console.log('passport-jwt triggered');
     try {
       const user = await getUserByUid(payload.uid);
       if(user){

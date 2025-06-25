@@ -3,5 +3,6 @@ export interface User {
     l_name : string,
     email : string,
     password : string,
-    uid : string,
+    uid? : string,
+    isadmin? : boolean
 }
